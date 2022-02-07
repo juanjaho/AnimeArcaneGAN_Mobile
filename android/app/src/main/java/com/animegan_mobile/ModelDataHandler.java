@@ -97,10 +97,10 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
         int imageHeight = bitmap.getHeight();
         int imageWidth = bitmap.getWidth();
-        int tem = (int) ((512.0f /imageWidth)*imageHeight);
+        int tem = (int) ((1080.0f /imageWidth)*imageHeight);
 
         // Resize bitmap to 28x28
-//        bitmap = Bitmap.createScaledBitmap(bitmap, 512, tem, false);
+       bitmap = Bitmap.createScaledBitmap(bitmap, 1080, tem, false);
         imageHeight = bitmap.getHeight();
         imageWidth = bitmap.getWidth();
 
