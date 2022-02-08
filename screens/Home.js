@@ -5,11 +5,9 @@ import {
   Button,
   StyleSheet,
   Dimensions,
-  Platform,
   Image,
 } from 'react-native';
 import {
-  ImageLibraryOptions,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
@@ -40,25 +38,28 @@ const HomeScreen = ({navigation}) => {
       return null;
     }
   };
-  
-  const ProcessButton = () => {
-    if (selectedImage){
 
+  const ProcessButton = () => {
+    if (selectedImage) {
       return (
         <Button
-        title="Process Image"
-        onPress={() =>
-          inferImage(selectedImage.uri, parseInt(outputWidth), setSelectedImage)
-        }
+          title="Process Image"
+          onPress={() =>
+            inferImage(
+              selectedImage.uri,
+              parseInt(outputWidth),
+              setSelectedImage,
+            )
+          }
         />
-        );
-      }else{
-        return null
-      }
+      );
+    } else {
+      return null;
+    }
   };
 
   const SaveButton = () => {
-    if (selectedImage!=undefined && selectedImage.hasOwnProperty("fake") ){
+    if (selectedImage != undefined && selectedImage.hasOwnProperty('fake')) {
       return (
         <Button
           title="Save Image"
@@ -108,8 +109,6 @@ const openImagePickerAsync = async (setSelectedImage, camera = true) => {
       includeBase64: false,
     };
     result = await launchCamera(options);
-    console.log('====================================');
-    console.log(result);
   } else {
     const options = {
       selectionLimit: 1,

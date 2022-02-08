@@ -51,7 +51,6 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
     @ReactMethod
     public void getLocalModelPath(Promise promise) {
-        Log.d("status:","yes it is working");
         try {
             String modelPath = copyFile(reactContext, "faceModel.ort");
             promise.resolve(modelPath);
@@ -194,7 +193,6 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
 
         Bitmap bitmap = Bitmap.createBitmap(pixels, dimensions[0], dimensions[1], Bitmap.Config.RGB_565);
-        Log.d("bitmap", Arrays.toString(pixels));
 
         try (FileOutputStream out = reactContext.openFileOutput("temp.jpeg",0) ) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
