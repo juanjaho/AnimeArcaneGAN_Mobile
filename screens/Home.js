@@ -1,5 +1,12 @@
 import {useState} from 'react';
-import {View, Button, Dimensions, Image,PermissionsAndroid, Platform} from 'react-native';
+import {
+  View,
+  Button,
+  Dimensions,
+  Image,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 import ImagePicker from 'react-native-image-crop-picker';
 import React from 'react';
@@ -15,8 +22,6 @@ const HomeScreen = ({navigation}) => {
         <View>
           <Image
             source={{uri: selectedImage.path}}
-            // width={Dimensions.get("window").width}
-
             style={{width: win.width, height: win.width}}></Image>
         </View>
       );
@@ -29,13 +34,12 @@ const HomeScreen = ({navigation}) => {
     if (selectedImage) {
       return (
         <Button
-          color="red"
+        color="#171717"
           title="Process Image"
           onPress={() =>
             inferImage(
               selectedImage.path,
               parseInt(outputWidth),
-
               setSelectedImage,
             )
           }
@@ -45,30 +49,29 @@ const HomeScreen = ({navigation}) => {
       return null;
     }
   };
-  async function hasAndroidPermission() {
+  const hasAndroidPermission = async () => {
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
     const hasPermission = await PermissionsAndroid.check(permission);
-    
+
     if (hasPermission) {
       return true;
     }
 
     const status = await PermissionsAndroid.request(permission);
     return status === 'granted';
-  }
+  };
   const savePicture = async path => {
     if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
       return;
     }
-    console.log("===============");
-    const result =await CameraRoll.save(path);
-    console.log(result);
+    const result = await CameraRoll.save(path);
   };
-  const SaveButton =  () => {
+  const SaveButton = () => {
     if (selectedImage != undefined && selectedImage.hasOwnProperty('fake')) {
       return (
         <Button
+        color="#171717"
           title="Save Image"
           onPress={() => savePicture(selectedImage.path)}
         />
@@ -80,12 +83,13 @@ const HomeScreen = ({navigation}) => {
   return (
     <View style={common.container}>
       <Button
-        color="green"
+        color="#171717"
         title="Take Picture"
         onPress={() => openImagePickerAsync(setSelectedImage)}
       />
 
       <Button
+      color="#171717"
         title="Select Image"
         onPress={() => openImagePickerAsync(setSelectedImage, false)}
       />
