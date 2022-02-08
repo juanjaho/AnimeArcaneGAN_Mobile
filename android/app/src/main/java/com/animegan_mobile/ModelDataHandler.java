@@ -62,9 +62,9 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void preprocess(String uri, Promise promise) {
+    public void preprocess(String uri,Integer width, Promise promise) {
         try {
-            WritableMap inputDataMap = preprocess(uri);
+            WritableMap inputDataMap = preprocess(uri,width);
             promise.resolve(inputDataMap);
 
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
     // It gets raw input data, which can be uri or byte array and others,
     // returns cooked data formatted as input of a model by promise.
-    private WritableMap preprocess(String uri) throws Exception {
+    private WritableMap preprocess(String uri,Integer width) throws Exception {
         final int batchSize = 1;
 
         InputStream is = MainApplication.getAppContext().getContentResolver().openInputStream(Uri.parse(uri));
@@ -97,10 +97,10 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
         int imageHeight = bitmap.getHeight();
         int imageWidth = bitmap.getWidth();
-        int tem = (int) ((1080.0f /imageWidth)*imageHeight);
+        int tem = (int) ((width*1.f /imageWidth)*imageHeight);
 
         // Resize bitmap to 28x28
-       bitmap = Bitmap.createScaledBitmap(bitmap, 1080, tem, false);
+       bitmap = Bitmap.createScaledBitmap(bitmap, width, tem, false);
         imageHeight = bitmap.getHeight();
         imageWidth = bitmap.getWidth();
 
@@ -194,40 +194,20 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
 
         Bitmap bitmap = Bitmap.createBitmap(pixels, dimensions[0], dimensions[1], Bitmap.Config.RGB_565);
+        Log.d("bitmap", Arrays.toString(pixels));
 
-        FileOutputStream fileOutputStream;
-        File getFileStreamPath = null;
-        try {
-            reactContext.deleteFile("temp2");
-            fileOutputStream = reactContext.openFileOutput("temp2", Context.MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            getFileStreamPath=reactContext.getFileStreamPath("temp2");
-            fileOutputStream.close();
-            
-        } catch (FileNotFoundException e) {
-            Log.d("save", "file not found");
-            e.printStackTrace();
+        try (FileOutputStream out = reactContext.openFileOutput("temp.jpeg",0) ) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+            out.flush();
+
         } catch (IOException e) {
-            Log.d("save", "io exception");
             e.printStackTrace();
         }
-        return  getFileStreamPath.toURI().toString();
 
 
 
+        return  reactContext.getFileStreamPath("temp.jpeg").toURI().toString();
 
-
-
-//
-//
-//
-//        String detectionResult ="";
-//
-//        WritableMap cookedMap = Arguments.createMap();
-//
-//        cookedMap.putString("result", detectionResult);
-//
-//        return cookedMap;
     }
 
 

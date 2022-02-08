@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 const { ModelDataHandler } = NativeModules
 
 
-const inferImage = async (imageUri: any, setImage: any) => {
+const inferImage = async (imageUri: any,outputWidth:Number, setImage: any) => {
     let preprocessTime = 0;
     let inferenceTime = 0;
     let postprocessTime = 0;
@@ -15,7 +15,7 @@ const inferImage = async (imageUri: any, setImage: any) => {
     let startTime = Date.now();
     const modelPath = await ModelDataHandler.getLocalModelPath()
     const session: InferenceSession = await InferenceSession.create(modelPath)
-    const byteInput = await ModelDataHandler.preprocess(imageUri);
+    const byteInput = await ModelDataHandler.preprocess(imageUri,outputWidth);
     const input: { [name: string]: Tensor } = {};
 
     for (const key in byteInput) {
@@ -48,9 +48,13 @@ const inferImage = async (imageUri: any, setImage: any) => {
     }
     // console.log(input.input.dims.slice(2,4).toString())
     mnistOutput['dims']={data:input.input.dims.slice(2,4).toString()}
-
+    
+    
     const result  = await ModelDataHandler.postprocess(mnistOutput);
-    return setImage({uri:result,width:input.input.dims[2],height:input.input.dims[3]})
+    
+    
+    return setImage({uri:result+"?"+Date.now(),width:input.input.dims[3],height:input.input.dims[2],fake:true})
+    
     postprocessTime = Date.now() - startTime;
 }
 export default inferImage

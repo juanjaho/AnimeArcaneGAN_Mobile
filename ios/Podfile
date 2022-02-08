@@ -16,6 +16,8 @@ target 'animeGAN_Mobile' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
   target 'animeGAN_MobileTests' do
     inherit! :complete
     # Pods for testing
