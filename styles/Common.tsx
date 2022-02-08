@@ -3,10 +3,15 @@ import { StyleSheet } from "react-native";
 const common =  StyleSheet.create({
     container: {
       flex: 1,
-      // backgroundColor: "magenta",
+      flexDirection:"column",
       alignItems: "stretch",
-      // justifyContent: 'center',
+      justifyContent:"flex-start",
+      // alignContent:"flex-start"
       
+    },
+    image: {
+      justifyContent: 'center',
+      alignItems: 'center',
     }
   });
 

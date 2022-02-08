@@ -6,13 +6,13 @@ const {ModelDataHandler} = NativeModules;
 
 const inferImage = async (
   imageUri: string,
-  outputWidth: Number,
+  outputMax: Number,
   setImage: any,
 ) => {
   const options: InferenceSession.RunOptions = {};
   const modelPath = await ModelDataHandler.getLocalModelPath();
   const session: InferenceSession = await InferenceSession.create(modelPath);
-  const byteInput = await ModelDataHandler.preprocess(imageUri, outputWidth);
+  const byteInput = await ModelDataHandler.preprocess(imageUri, outputMax);
   const input: {[name: string]: Tensor} = {};
 
   for (const key in byteInput) {

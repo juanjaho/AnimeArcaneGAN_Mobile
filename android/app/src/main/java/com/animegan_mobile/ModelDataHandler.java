@@ -61,9 +61,9 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void preprocess(String uri,Integer width, Promise promise) {
+    public void preprocess(String uri,Integer maxOutput, Promise promise) {
         try {
-            WritableMap inputDataMap = preprocess(uri,width);
+            WritableMap inputDataMap = preprocess(uri,maxOutput);
             promise.resolve(inputDataMap);
 
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
     // It gets raw input data, which can be uri or byte array and others,
     // returns cooked data formatted as input of a model by promise.
-    private WritableMap preprocess(String uri,Integer width) throws Exception {
+    private WritableMap preprocess(String uri,Integer maxOutput) throws Exception {
         final int batchSize = 1;
 
         InputStream is = MainApplication.getAppContext().getContentResolver().openInputStream(Uri.parse(uri));
@@ -96,12 +96,17 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
         int imageHeight = bitmap.getHeight();
         int imageWidth = bitmap.getWidth();
-        int tem = (int) ((width*1.f /imageWidth)*imageHeight);
+        int tem;
+        if (imageWidth>=imageHeight){
 
-        // Resize bitmap to 28x28
-       bitmap = Bitmap.createScaledBitmap(bitmap, width, tem, false);
-        imageHeight = bitmap.getHeight();
-        imageWidth = bitmap.getWidth();
+            imageHeight = (int) ((maxOutput*1.f /imageWidth)*imageHeight);
+            imageWidth=maxOutput;
+        }else{
+            imageWidth = (int) ((maxOutput*1.f /imageHeight)*imageWidth);
+            imageHeight=maxOutput;
+        }
+        bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, false);
+
 
         ByteBuffer imageByteBuffer = ByteBuffer.allocate(imageHeight * imageWidth * 4*3).order(ByteOrder.nativeOrder());
         FloatBuffer imageFloatBuffer = imageByteBuffer.asFloatBuffer();
