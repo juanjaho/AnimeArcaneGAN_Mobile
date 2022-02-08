@@ -30,7 +30,10 @@ const inferImage = async (imageUri: any, outputWidth: Number, setImage: any) => 
 
   // preprocessTime = Date.now() - startTime;
   // startTime = Date.now();
+  console.log("input ready");
+
   const output: InferenceSession.ReturnType = await session.run(input, session.outputNames, options);
+  console.log("output ready");
 
 
   // inferenceTime = Date.now() - startTime;
@@ -52,7 +55,7 @@ const inferImage = async (imageUri: any, outputWidth: Number, setImage: any) => 
   const result = await ModelDataHandler.postprocess(mnistOutput);
 
 
-  return setImage({ uri: result + "?" + Date.now(), width: input.input.dims[3], height: input.input.dims[2], fake: true })
+  return setImage({ path: result + "?" + Date.now(), width: input.input.dims[3], height: input.input.dims[2], fake: true })
 
   // postprocessTime = Date.now() - startTime;
 }

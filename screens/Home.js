@@ -1,34 +1,20 @@
-import {useEffect, useState} from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Dimensions,
-  Image,
-} from 'react-native';
-import {
-  launchCamera,
-  launchImageLibrary,
-} from 'react-native-image-picker';
+import {useState} from 'react';
+import {View, Button, Dimensions, Image,PermissionsAndroid, Platform} from 'react-native';
+import CameraRoll from '@react-native-community/cameraroll';
+import ImagePicker from 'react-native-image-crop-picker';
 import React from 'react';
 import common from '../styles/Common';
 import inferImage from '../api/Inference';
-// import CameraRoll from '@react-native-community/cameraroll';
+
 const HomeScreen = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState();
-  const [outputWidth, onChangeNumber] = React.useState('640');
-  useEffect(() => {
-    if (selectedImage) {
-      onChangeNumber(selectedImage.width.toString());
-    }
-  }, [selectedImage]);
+  const [outputWidth, onChangeNumber] = React.useState('650');
   const ImageToProcess = () => {
     if (selectedImage) {
       return (
         <View>
           <Image
-            source={{uri: selectedImage.uri}}
+            source={{uri: selectedImage.path}}
             // width={Dimensions.get("window").width}
 
             style={{width: win.width, height: win.width}}></Image>
@@ -43,11 +29,13 @@ const HomeScreen = ({navigation}) => {
     if (selectedImage) {
       return (
         <Button
+          color="red"
           title="Process Image"
           onPress={() =>
             inferImage(
-              selectedImage.uri,
+              selectedImage.path,
               parseInt(outputWidth),
+
               setSelectedImage,
             )
           }
@@ -57,13 +45,32 @@ const HomeScreen = ({navigation}) => {
       return null;
     }
   };
+  async function hasAndroidPermission() {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
-  const SaveButton = () => {
+    const hasPermission = await PermissionsAndroid.check(permission);
+    
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
+  }
+  const savePicture = async path => {
+    if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
+      return;
+    }
+    console.log("===============");
+    const result =await CameraRoll.save(path);
+    console.log(result);
+  };
+  const SaveButton =  () => {
     if (selectedImage != undefined && selectedImage.hasOwnProperty('fake')) {
       return (
         <Button
           title="Save Image"
-          // onPress={() => CameraRoll.save(selectedImage.uri)}
+          onPress={() => savePicture(selectedImage.path)}
         />
       );
     } else {
@@ -84,13 +91,13 @@ const HomeScreen = ({navigation}) => {
       />
 
       <ImageToProcess />
-      <TextInput
+      {/* <TextInput
         style={{height: 50}}
         onChangeText={onChangeNumber}
         value={outputWidth}
         placeholder="Output Width"
         keyboardType="numeric"
-      />
+      /> */}
       <ProcessButton />
 
       <SaveButton />
@@ -103,33 +110,44 @@ const openImagePickerAsync = async (setSelectedImage, camera = true) => {
 
   let result;
   if (camera) {
+    // const options = {
+    //   selectionLimit: 1,
+    //   cameraType: 'back',
+    //   includeBase64: false,
+    // };
+    // result = await launchCamera(options);
     const options = {
-      selectionLimit: 1,
-      cameraType: 'back',
-      includeBase64: false,
-    };
-    result = await launchCamera(options);
-  } else {
-    const options = {
-      selectionLimit: 1,
+      width: 650,
+      height: 650,
+      cropping: true,
       mediaType: 'photo',
-      includeBase64: false,
+      enableRotationGesture: true,
     };
-    result = await launchImageLibrary(options);
+    result = await ImagePicker.openCamera(options);
+    console.log(result);
+  } else {
+    // const options = {
+    //   selectionLimit: 1,
+    //   mediaType: 'photo',
+    //   includeBase64: false,
+    // };
+    // result = await launchImageLibrary(options);
+    const options = {
+      width: 650,
+      height: 650,
+      cropping: true,
+      mediaType: 'photo',
+      enableRotationGesture: true,
+    };
+    result = await ImagePicker.openPicker(options);
+    console.log(result);
+    console.log(result.path);
   }
 
   if (!result.didCancel) {
-    setSelectedImage(result.assets[0]);
+    setSelectedImage(result);
   }
-
-  // setSelectedImage(pickerResult);
 };
 const win = Dimensions.get('window');
-const styles = StyleSheet.create({
-  /* Other styles hidden to keep the example brief... */
-  thumbnail: {
-    maxHeight: win.height / 1.7,
-  },
-});
 
 export default HomeScreen;
