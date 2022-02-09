@@ -152,8 +152,7 @@ const openImagePickerAsync = async (setSelectedImage, camera = true) => {
 
   let result;
   const options = {
-    compressImageMaxWidth: 650,
-    compressImageMaxHeight: 650,
+    
     cropping: true,
     mediaType: 'photo',
     enableRotationGesture: true,
@@ -166,6 +165,7 @@ const openImagePickerAsync = async (setSelectedImage, camera = true) => {
   }
 
   if (!result.didCancel) {
+    console.log(result);
     setSelectedImage(result);
   }
 };
