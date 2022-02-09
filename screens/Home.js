@@ -100,8 +100,9 @@ const HomeScreen = ({navigation}) => {
           <MultiSlider
             values={[runningOutputMax]}
             min={500}
-            max={800}
-            step={25}
+            max={1000}
+            step={50}
+            
             snapped={true}
             onValuesChange={e => {
               setRunningOutputMax(e[0]);

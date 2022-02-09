@@ -96,16 +96,21 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
         int imageHeight = bitmap.getHeight();
         int imageWidth = bitmap.getWidth();
-        int tem;
-        if (imageWidth>=imageHeight){
 
+
+        if (imageWidth>=imageHeight){
             imageHeight = (int) ((maxOutput*1.f /imageWidth)*imageHeight);
             imageWidth=maxOutput;
         }else{
             imageWidth = (int) ((maxOutput*1.f /imageHeight)*imageWidth);
             imageHeight=maxOutput;
         }
-        bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, false);
+        bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, true);
+
+//        bitmap = Smooth.rescale(bitmap, imageWidth, imageHeight, Smooth.AlgoParametrized1.LANCZOS,1.0);
+
+
+
 
 
         ByteBuffer imageByteBuffer = ByteBuffer.allocate(imageHeight * imageWidth * 4*3).order(ByteOrder.nativeOrder());
@@ -115,23 +120,17 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
             for (int w = 0; w < imageWidth; ++w) {
                 int pixel = bitmap.getPixel(w, h);
                 imageFloatBuffer.put((float) Color.red(pixel)/255*2-1);
-//                imageFloatBuffer.put((float) Color.green(pixel)/255*2-1);
-//                imageFloatBuffer.put((float) Color.blue(pixel)/255*2-1);
             }
         }
         for (int h = 0; h < imageHeight; ++h) {
             for (int w = 0; w < imageWidth; ++w) {
                 int pixel = bitmap.getPixel(w, h);
-//                imageFloatBuffer.put((float) Color.red(pixel)/255*2-1);
                 imageFloatBuffer.put((float) Color.green(pixel)/255*2-1);
-//                imageFloatBuffer.put((float) Color.blue(pixel)/255*2-1);
             }
         }
         for (int h = 0; h < imageHeight; ++h) {
             for (int w = 0; w < imageWidth; ++w) {
                 int pixel = bitmap.getPixel(w, h);
-//                imageFloatBuffer.put((float) Color.red(pixel)/255*2-1);
-//                imageFloatBuffer.put((float) Color.green(pixel)/255*2-1);
                 imageFloatBuffer.put((float) Color.blue(pixel)/255*2-1);
             }
         }
@@ -180,8 +179,8 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         dimensions[1]= Integer.parseInt(dimens[0]);
         FloatBuffer buffer =ByteBuffer.wrap(Base64.decode(outputData, Base64.DEFAULT)).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        int[] pixels = new int[dimensions[0] * dimensions[1]]; // Set your expected output's height and width
-//        ArrayList<Float> dataArray = new ArrayList<>();
+        int[] pixels = new int[dimensions[0] * dimensions[1]];
+
         float[] dataArray = new float[dimensions[0] * dimensions[1]*3];
         int count = 0;
         while (buffer.hasRemaining()) {
