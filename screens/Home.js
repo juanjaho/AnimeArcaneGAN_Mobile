@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {View, Button, Dimensions, Image,Text} from 'react-native';
+import {View, Button, Dimensions, Image, Text} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import React from 'react';
 import common from '../styles/Common';
@@ -13,16 +13,7 @@ const HomeScreen = ({navigation}) => {
   const [outputMax, setOutputMax] = React.useState(650);
   const [isSaveScreen, setIsSaveScreen] = useState(false);
   const [isLoadingScreen, setIsLoadingScreen] = useState(false);
-  // useEffect(() => {
-  //   if (isLoadingScreen == true) {
-  //     inferImage(
-  //       selectedImage.path,
-  //       outputMax,
-  //       setSelectedImage,
-  //       setIsLoadingScreen,
-  //     );
-  //   }
-  // }, [isLoadingScreen]);
+
   const ImageToProcess = () => {
     if (selectedImage) {
       return (
@@ -50,12 +41,15 @@ const HomeScreen = ({navigation}) => {
           title="Process Image"
           onPress={() => {
             setIsLoadingScreen(true);
-
-            inferImage(
-              selectedImage.path,
-              outputMax,
-              setSelectedImage,
-              setIsLoadingScreen,
+            setTimeout(
+              () =>
+                inferImage(
+                  selectedImage.path,
+                  outputMax,
+                  setSelectedImage,
+                  setIsLoadingScreen,
+                ),
+              500,
             );
           }}
         />
@@ -83,7 +77,7 @@ const HomeScreen = ({navigation}) => {
       <SliderOutputMax
         min={100}
         max={1400}
-        step={100}
+        step={10}
         snapped={true}
         outputMax={outputMax}
         setOutputMax={setOutputMax}

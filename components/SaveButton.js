@@ -10,7 +10,7 @@ const SaveButton = props => {
       <Button
         color="#171717"
         title="Save Image"
-        onPress={() => savePicture(props.selectedImage.path)}
+        onPress={() => savePicture(props.selectedImage.path,props)}
       />
     );
   } else {
@@ -29,7 +29,7 @@ const hasAndroidPermission = async () => {
   const status = await PermissionsAndroid.request(permission);
   return status === 'granted';
 };
-const savePicture = async path => {
+const savePicture = async (path,props) => {
   if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
     return;
   }

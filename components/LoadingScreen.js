@@ -16,7 +16,9 @@ function LoadingScreen(props) {
 }
 const DefaultModalContent = props => (
   <View style={styles.content}>
-    <Text style={styles.contentTitle}>Processing image⌛</Text>
+    <Text style={styles.contentTitle}>Processing image</Text>
+    <Text style={styles.contentTitle}>⌛</Text>
+    
     {/* <Button testID={'close-button'} onPress={props.onPress} title="Close" color={'black'}/> */}
   </View>
 );
@@ -28,7 +30,7 @@ const styles = StyleSheet.create({
   content: {
     // backgroundColor: '#171717',
     // backgroundColor: 'green',
-    padding: 100,
+    // padding: 100,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 25,
