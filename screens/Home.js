@@ -1,26 +1,28 @@
-import {useState} from 'react';
-import {
-  View,
-  Button,
-  Dimensions,
-  Image,
-  PermissionsAndroid,
-  Platform,
-  TextInput,
-  Text,
-  ScrollView,
-} from 'react-native';
-import CameraRoll from '@react-native-community/cameraroll';
+import {useState, useEffect} from 'react';
+import {View, Button, Dimensions, Image,Text} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import React from 'react';
 import common from '../styles/Common';
 import inferImage from '../api/Inference';
-import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import ModalTester from '../components/ModalTester';
+import SaveScreen from '../components/SaveScreen';
+import LoadingScreen from '../components/LoadingScreen';
+import SliderOutputMax from '../components/SliderOutputMax';
+import SaveButton from '../components/SaveButton.js';
 const HomeScreen = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState();
   const [outputMax, setOutputMax] = React.useState(650);
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isSaveScreen, setIsSaveScreen] = useState(false);
+  const [isLoadingScreen, setIsLoadingScreen] = useState(false);
+  // useEffect(() => {
+  //   if (isLoadingScreen == true) {
+  //     inferImage(
+  //       selectedImage.path,
+  //       outputMax,
+  //       setSelectedImage,
+  //       setIsLoadingScreen,
+  //     );
+  //   }
+  // }, [isLoadingScreen]);
   const ImageToProcess = () => {
     if (selectedImage) {
       return (
@@ -31,7 +33,8 @@ const HomeScreen = ({navigation}) => {
               width: win.width,
               height: win.width,
               aspectRatio: selectedImage.width / selectedImage.height,
-            }}></Image>
+            }}
+          />
         </View>
       );
     } else {
@@ -45,81 +48,23 @@ const HomeScreen = ({navigation}) => {
         <Button
           color="#171717"
           title="Process Image"
-          onPress={() =>
-            inferImage(selectedImage.path, outputMax, setSelectedImage)
-          }
+          onPress={() => {
+            setIsLoadingScreen(true);
+
+            inferImage(
+              selectedImage.path,
+              outputMax,
+              setSelectedImage,
+              setIsLoadingScreen,
+            );
+          }}
         />
       );
     } else {
       return null;
     }
   };
-  const hasAndroidPermission = async () => {
-    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
 
-    const hasPermission = await PermissionsAndroid.check(permission);
-
-    if (hasPermission) {
-      return true;
-    }
-
-    const status = await PermissionsAndroid.request(permission);
-    return status === 'granted';
-  };
-  const savePicture = async path => {
-    if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
-      return;
-    }
-    const result = await CameraRoll.save(path);
-    if (result) {
-      setModalVisible(true);
-    }
-  };
-  const SaveButton = () => {
-    if (selectedImage != undefined && selectedImage.hasOwnProperty('fake')) {
-      return (
-        <Button
-          color="#171717"
-          title="Save Image"
-          onPress={() => savePicture(selectedImage.path)}
-        />
-      );
-    } else {
-      return null;
-    }
-  };
-  const SliderOutputMax = () => {
-    // let runner = outputMax
-    const [runningOutputMax, setRunningOutputMax] = React.useState(outputMax);
-    if (selectedImage != undefined) {
-      return (
-        <View style={{alignItems: 'center', marginTop: 10}}>
-          <Text>
-            Max Dimension: {runningOutputMax}px X {runningOutputMax}px{' '}
-          </Text>
-          <MultiSlider
-            values={[runningOutputMax]}
-            min={500}
-            max={1000}
-            step={50}
-            
-            snapped={true}
-            onValuesChange={e => {
-              setRunningOutputMax(e[0]);
-            }}
-            onValuesChangeFinish={e => {
-              setOutputMax(e[0]);
-            }}
-
-            // onValuesChangeStart={this.disableScroll}
-            // onValuesChangeFinish={this.enableScroll}
-          />
-        </View>
-      );
-    }else{
-      return null
-    }
-  };
   return (
     <View style={common.container}>
       <Button
@@ -135,15 +80,31 @@ const HomeScreen = ({navigation}) => {
       />
       <ImageToProcess />
 
-      <SliderOutputMax />
+      <SliderOutputMax
+        min={100}
+        max={1400}
+        step={100}
+        snapped={true}
+        outputMax={outputMax}
+        setOutputMax={setOutputMax}
+        selectedImage={selectedImage}
+      />
 
       <ProcessButton />
 
-      <SaveButton />
-      <ModalTester
-        isModalVisible={isModalVisible}
-        setModalVisible={setModalVisible}
+      <SaveButton
+        selectedImage={selectedImage}
+        setIsSaveScreen={setIsSaveScreen}
       />
+      <SaveScreen
+        isSaveScreen={isSaveScreen}
+        setIsSaveScreen={setIsSaveScreen}
+      />
+      <LoadingScreen
+        isLoadingScreen={isLoadingScreen}
+        setIsLoadingScreen={setIsLoadingScreen}
+      />
+      {/* <Text >{isLoadingScreen && <Text>hallo</Text>}</Text> */}
     </View>
   );
 };
@@ -153,7 +114,6 @@ const openImagePickerAsync = async (setSelectedImage, camera = true) => {
 
   let result;
   const options = {
-    
     cropping: true,
     mediaType: 'photo',
     enableRotationGesture: true,

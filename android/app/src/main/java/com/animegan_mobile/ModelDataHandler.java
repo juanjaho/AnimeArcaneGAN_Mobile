@@ -105,9 +105,7 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
             imageWidth = (int) ((maxOutput*1.f /imageHeight)*imageWidth);
             imageHeight=maxOutput;
         }
-        bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, true);
-
-//        bitmap = Smooth.rescale(bitmap, imageWidth, imageHeight, Smooth.AlgoParametrized1.LANCZOS,1.0);
+        bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, false);
 
 
 

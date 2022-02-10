@@ -8,6 +8,7 @@ const inferImage = async (
   imageUri: string,
   outputMax: Number,
   setImage: any,
+  setIsLoadingScreen: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const options: InferenceSession.RunOptions = {};
   const modelPath = await ModelDataHandler.getLocalModelPath();
@@ -49,7 +50,7 @@ const inferImage = async (
   mnistOutput['dims'] = {data: input.input.dims.slice(2, 4).toString()};
 
   const result = await ModelDataHandler.postprocess(mnistOutput);
-
+  setIsLoadingScreen(false);
   return setImage({
     path: result + '?' + Date.now(),
     width: input.input.dims[3],
