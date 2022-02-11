@@ -9,7 +9,7 @@ animegan2-pytorch](https://github.com/bryandlee/animegan2-pytorch).
 This project differs from commercial applications such as [Prequel](https://www.prequel.app/) because the images are
 processed locally/natively on the device itself rather than through a cloud server.
 
-<table border="None">
+<table style="border: none; border-spacing: 0;">
     <tr>
         <td>
             <img src="example/original.jpg"
