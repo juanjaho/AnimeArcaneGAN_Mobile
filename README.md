@@ -1,6 +1,5 @@
-# animeGAN_Mobile
+# Mobile Implementation of AnimeGANv2
 
-Mobile Implementation of AnimeGANv2
 
 This project is a wrapper of the base model made by @TachibanaYoshino [AnimeGANv2](https://github.com/TachibanaYoshino/AnimeGANv2) and the weighted face model by @bryandlee [
 animegan2-pytorch](https://github.com/bryandlee/animegan2-pytorch).
