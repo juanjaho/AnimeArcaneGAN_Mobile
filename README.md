@@ -20,17 +20,17 @@ processed locally/natively on the device itself rather than through a cloud serv
         <td>
             <img src="example/original.jpg"
             alt="Elephant at sunset"
-            width="300">
+            width="230">
         </td>
         <td>
             <img src="example/result.jpg"
             alt="Elephant at sunset"
-            width="300">
+            width="230">
         </td>
         <td>
             <img src="example/prequel.jpg"
             alt="Elephant at sunset"
-            width="300">
+            width="230">
         </td>
     </tr>
     <tr>
