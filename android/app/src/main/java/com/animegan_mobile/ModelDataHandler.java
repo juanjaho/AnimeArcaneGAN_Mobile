@@ -50,9 +50,9 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void getLocalModelPath(Promise promise) {
+    public void getLocalModelPath(String selectedModel,Promise promise) {
         try {
-            String modelPath = copyFile(reactContext, "faceModel.ort");
+            String modelPath = copyFile(reactContext, selectedModel);
             promise.resolve(modelPath);
         } catch (Exception e) {
             promise.reject("Can't get a model", e);
@@ -61,9 +61,9 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void preprocess(String uri,Integer maxOutput, Promise promise) {
+    public void preprocess(String uri,Integer maxOutput,Boolean faceModel, Promise promise) {
         try {
-            WritableMap inputDataMap = preprocess(uri,maxOutput);
+            WritableMap inputDataMap = preprocess(uri,maxOutput,faceModel);
             promise.resolve(inputDataMap);
 
         } catch (Exception e) {
@@ -72,9 +72,9 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void postprocess(ReadableMap result, Promise promise) {
+    public void postprocess(ReadableMap result,Boolean faceModel, Promise promise) {
         try {
-            String uri = postprocess(result);
+            String uri = postprocess(result,faceModel);
             promise.resolve(uri);
         } catch (Exception e) {
             promise.reject("Can't process a inference result", e);
@@ -83,7 +83,7 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
     // It gets raw input data, which can be uri or byte array and others,
     // returns cooked data formatted as input of a model by promise.
-    private WritableMap preprocess(String uri,Integer maxOutput) throws Exception {
+    private WritableMap preprocess(String uri,Integer maxOutput,Boolean faceModel) throws Exception {
         final int batchSize = 1;
 
         InputStream is = MainApplication.getAppContext().getContentResolver().openInputStream(Uri.parse(uri));
@@ -107,31 +107,39 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         }
         bitmap = Bitmap.createScaledBitmap(bitmap, imageWidth, imageHeight, false);
 
-
-
-
-
         ByteBuffer imageByteBuffer = ByteBuffer.allocate(imageHeight * imageWidth * 4*3).order(ByteOrder.nativeOrder());
         FloatBuffer imageFloatBuffer = imageByteBuffer.asFloatBuffer();
+        if (faceModel) {
+            for (int h = 0; h < imageHeight; ++h) {
+                for (int w = 0; w < imageWidth; ++w) {
+                    int pixel = bitmap.getPixel(w, h);
+                    imageFloatBuffer.put((float) Color.red(pixel) / 255 * 2 - 1);
+                }
+            }
+            for (int h = 0; h < imageHeight; ++h) {
+                for (int w = 0; w < imageWidth; ++w) {
+                    int pixel = bitmap.getPixel(w, h);
+                    imageFloatBuffer.put((float) Color.green(pixel) / 255 * 2 - 1);
+                }
+            }
+            for (int h = 0; h < imageHeight; ++h) {
+                for (int w = 0; w < imageWidth; ++w) {
+                    int pixel = bitmap.getPixel(w, h);
+                    imageFloatBuffer.put((float) Color.blue(pixel) / 255 * 2 - 1);
+                }
+            }
+        }else {
+            for (int h = 0; h < imageHeight; ++h) {
+                for (int w = 0; w < imageWidth; ++w) {
+                    int pixel = bitmap.getPixel(w, h);
+                    imageFloatBuffer.put((float) Color.red(pixel) / 255 * 2 - 1);
+                    imageFloatBuffer.put((float) Color.green(pixel) / 255 * 2 - 1);
+                    imageFloatBuffer.put((float) Color.blue(pixel) / 255 * 2 - 1);
+                }
+            }
 
-        for (int h = 0; h < imageHeight; ++h) {
-            for (int w = 0; w < imageWidth; ++w) {
-                int pixel = bitmap.getPixel(w, h);
-                imageFloatBuffer.put((float) Color.red(pixel)/255*2-1);
-            }
         }
-        for (int h = 0; h < imageHeight; ++h) {
-            for (int w = 0; w < imageWidth; ++w) {
-                int pixel = bitmap.getPixel(w, h);
-                imageFloatBuffer.put((float) Color.green(pixel)/255*2-1);
-            }
-        }
-        for (int h = 0; h < imageHeight; ++h) {
-            for (int w = 0; w < imageWidth; ++w) {
-                int pixel = bitmap.getPixel(w, h);
-                imageFloatBuffer.put((float) Color.blue(pixel)/255*2-1);
-            }
-        }
+
         imageByteBuffer.rewind();
 
         WritableMap inputDataMap = Arguments.createMap();
@@ -141,9 +149,17 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
         WritableArray dims = Arguments.createArray();
         dims.pushInt(batchSize);
-        dims.pushInt(3);
-        dims.pushInt(imageHeight);
-        dims.pushInt(imageWidth);
+        if (faceModel) {
+            dims.pushInt(3);
+            dims.pushInt(imageHeight);
+            dims.pushInt(imageWidth);
+        }else{
+
+            dims.pushInt(imageHeight);
+            dims.pushInt(imageWidth);
+            dims.pushInt(3);
+        }
+
 
 
 
@@ -162,7 +178,7 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
 
         return inputDataMap;
     }
-    private String postprocess(ReadableMap result) throws Exception {
+    private String postprocess(ReadableMap result,Boolean faceModel) throws Exception {
 
 
         ReadableMap outputTensor = result.getMap("output");
@@ -176,28 +192,34 @@ public class ModelDataHandler extends  ReactContextBaseJavaModule{
         dimensions[0]= Integer.parseInt(dimens[1]);
         dimensions[1]= Integer.parseInt(dimens[0]);
         FloatBuffer buffer =ByteBuffer.wrap(Base64.decode(outputData, Base64.DEFAULT)).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        Bitmap bitmap;
+        if (faceModel) {
+            int[] pixels = new int[dimensions[0] * dimensions[1]];
 
-        int[] pixels = new int[dimensions[0] * dimensions[1]];
+            float[] dataArray = new float[dimensions[0] * dimensions[1] * 3];
+            int count = 0;
+            while (buffer.hasRemaining()) {
+                dataArray[count] = buffer.get();
+                count++;
+            }
 
-        float[] dataArray = new float[dimensions[0] * dimensions[1]*3];
-        int count = 0;
-        while (buffer.hasRemaining()) {
-            dataArray[count]=buffer.get();
-            count++;
+            int constant = dimensions[0] * dimensions[1];
+            for (int i = 0; i < constant; i++) {
+                float r = (dataArray[i] + 1) / 2 * 255.0f;
+                float g = (dataArray[i + constant] + 1) / 2 * 255.0f;
+                float b = (dataArray[i + constant * 2] + 1) / 2 * 255.0f;
+                pixels[i] = (((int) r) << 16) | (((int) g) << 8) | ((int) b);
+            }
+
+            bitmap = Bitmap.createBitmap(pixels, dimensions[0], dimensions[1], Bitmap.Config.RGB_565);
+        }else{
+            bitmap = Bitmap.createBitmap( dimensions[0], dimensions[1], Bitmap.Config.ARGB_8888);
+            bitmap.copyPixelsFromBuffer(buffer);
         }
-
-        int constant = dimensions[0] * dimensions[1];
-        for (int i = 0; i < constant; i++) {
-            float r = (dataArray[i] + 1) / 2 * 255.0f;
-            float g = (dataArray[i + constant] + 1) / 2 * 255.0f;
-            float b = (dataArray[i + constant * 2] + 1) / 2 * 255.0f;
-            pixels[i] =  (((int) r) << 16) | (((int) g) << 8) | ((int) b);
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(pixels, dimensions[0], dimensions[1], Bitmap.Config.RGB_565);
 
         try (FileOutputStream out = reactContext.openFileOutput("temp.jpeg",0) ) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+
             out.flush();
 
         } catch (IOException e) {
