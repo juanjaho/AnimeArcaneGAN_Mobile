@@ -15,7 +15,7 @@ const HomeScreen = ({navigation}) => {
   const [outputMax, setOutputMax] = React.useState(650);
   const [isSaveScreen, setIsSaveScreen] = useState(false);
   const [isLoadingScreen, setIsLoadingScreen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("faceModel.ort");
+  const [selectedModel, setSelectedModel] = useState("face_paint_512_v2.ptl");
   return (
     <View style={common.container}>
       <Button

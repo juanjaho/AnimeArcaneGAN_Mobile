@@ -12,7 +12,7 @@ const ProcessButton = (props) => {
             setTimeout(
               () =>
                 inferImage(
-                  props.selectedImage.path,
+                  props.selectedImage,
                   props.outputMax,
                   props.setSelectedImage,
                   props.setIsLoadingScreen,

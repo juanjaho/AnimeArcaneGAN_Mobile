@@ -30,6 +30,7 @@ local.properties
 *.iml
 *.hprof
 gradle.properties
+*.ptl
 # node.js
 #
 node_modules/

@@ -198,6 +198,10 @@ android {
 
         }
     }
+    
+    packagingOptions {
+        pickFirst '**/*.so'
+    }
 }
 
 dependencies {
@@ -207,6 +211,8 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation project(path: ':@react-native-community_cameraroll')
+    implementation 'org.pytorch:pytorch_android_lite:1.10.0'
+    implementation 'org.pytorch:pytorch_android_torchvision_lite:1.10.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

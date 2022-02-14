@@ -11,9 +11,9 @@ const ModelPicker = props => {
       onValueChange={(itemValue, itemIndex) =>
         props.setSelectedModel(itemValue)
       }>
-      <Picker.Item label="FaceModel" value="faceModel.ort" />
-      <Picker.Item label="BackgroundPaprika" value="paprika.ort" />
-      {/* <Picker.Item label="BackgroudnV3" value="backgroundV3.ort" /> */}
+      <Picker.Item label="FaceModel" value="face_paint_512_v2.ptl" />
+      <Picker.Item label="BackgroundPaprika" value="paprika.ptl" />
+      <Picker.Item label="Arcane" value="ArcaneGANv0.3.ptl" />
     </Picker>
   );
 };
