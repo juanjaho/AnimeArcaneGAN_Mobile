@@ -3,7 +3,7 @@
 
 This project is a wrapper of the base model made by @TachibanaYoshino
 [AnimeGANv2](https://github.com/TachibanaYoshino/AnimeGANv2) and the weighted face model by @bryandlee [
-animegan2-pytorch](https://github.com/bryandlee/animegan2-pytorch).
+animegan2-pytorch](https://github.com/bryandlee/animegan2-pytorch) and Arcane model by @Alex Spirin [ArcaneGANv0.3](https://github.com/Sxela/ArcaneGAN/tree/v0.3).
 
 
 This project differs from commercial applications such as [Prequel](https://www.prequel.app/) because the images are
