@@ -20,34 +20,34 @@ processed locally/natively on the device itself rather than through a cloud serv
         <td>
             <img src="testImage/girl1.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
         <td>
             <img src="testImage/girl1AnimeGAN.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
         <td>
             <img src="testImage/girl1Arcane.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
     </tr>
     <tr>
         <td>
             <img src="testImage/guy1.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
         <td>
             <img src="testImage/guy1AnimeGAN.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
         <td>
             <img src="testImage/guy1Arcane.jpg"
             alt="Elephant at sunset"
-            width="230">
+            >
         </td>
     </tr>
     <tr>
