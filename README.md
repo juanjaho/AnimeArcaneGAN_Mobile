@@ -28,7 +28,7 @@ processed locally/natively on the device itself rather than through a cloud serv
             width="230">
         </td>
         <td>
-            <img src="example/prequel.jpg"
+            <img src="example/arcane.jpg"
             alt="Elephant at sunset"
             width="230">
         </td>
@@ -41,7 +41,7 @@ processed locally/natively on the device itself rather than through a cloud serv
             AnimeGAN_Mobile
         </td>
         <td>
-            Prequel
+            Arcane
         </td>
     </tr>
 </table>
