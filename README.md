@@ -9,8 +9,30 @@ animegan2-pytorch](https://github.com/bryandlee/animegan2-pytorch) and Arcane mo
 This project differs from commercial applications such as [Prequel](https://www.prequel.app/) because the images are
 processed locally/natively on the device itself rather than through a cloud server.
 
-[Download the apk](https://github.com/juanjaho/animeGAN_Mobile/releases/tag/v0.2.0-alpha)
+[Download the apk](https://github.com/juanjaho/animeGAN_Mobile/releases)
 
+# Getting Started
+Clone the project
+
+    git clone https://github.com/juanjaho/animeGAN_Mobile
+
+Create gradle.properties inside android folder at
+
+    android/gradle.properties
+
+Copy and paste the following into the gradle.properties:
+
+    android.useAndroidX=true
+    android.enableJetifier=true
+    FLIPPER_VERSION=0.99.0
+    MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+    MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+
+Get the latest models from latest [release](https://github.com/juanjaho/animeGAN_Mobile/releases) and add wanted models to 
+    
+    android/app/src/main/assets
+
+Enjoy :)
 <br />
 
 # Example
