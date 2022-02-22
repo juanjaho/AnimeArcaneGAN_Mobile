@@ -59,7 +59,8 @@ processed locally/natively on the device itself rather than through a cloud serv
         </td>
     </tr>
 </table>
-</br>
+
+
 
 # Getting Started
 Clone the project
