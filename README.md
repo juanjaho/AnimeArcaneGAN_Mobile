@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-<meta name="google-site-verification" content="a7C3enBZs79nS4tp_MRc1JdUnfgh3X5VDKR3x4gCZR4" />
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document</title>
-</head>
-<body>
-    
-
 # Mobile Implementation of AnimeGANv2
 
 
@@ -98,5 +85,3 @@ Enjoy :)
     </tr>
 </table>
   
-</body>
-</html>
