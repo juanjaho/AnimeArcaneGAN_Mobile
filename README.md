@@ -1,4 +1,4 @@
-# Mobile Implementation of AnimeGANv2
+# Mobile Implementation of AnimeGAN and ArcaneGAN
 
 
 This project is a wrapper of the base model made by @TachibanaYoshino
